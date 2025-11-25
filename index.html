@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Handwritten Notes</title>
+</head>
+<body>
+  <h1>AI Handwritten Notes Generator</h1>
+
+  <form id="notesForm">
+    <textarea id="inputText" rows="10" cols="50" placeholder="Enter your class notes..."></textarea>
+    <br><br>
+    <button type="button" onclick="generateNotes()">Generate Handwritten Notes</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    async function generateNotes() {
+      const text = document.getElementById("inputText").value;
+
+      document.getElementById("status").innerText = "Generating handwritten notes... please wait";
+
+      const response = await fetch("/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: text })
+      });
+
+      const data = await response.blob();
+
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(data);
+      link.download = "handwritten_notes.pdf";
+      link.click();
+
+      document.getElementById("status").innerText = "Done! File downloaded.";
+    }
+  </script>
+</body>
+</html>
